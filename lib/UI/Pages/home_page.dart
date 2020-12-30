@@ -8,12 +8,20 @@ import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'owned_page.dart';
 
 class HomePage extends StatefulWidget {
+  final int index;
+
+  const HomePage({Key key, @required this.index}) : super(key: key);
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  int currentIndex = 1;
+  int currentIndex;
+  @override
+  void initState() {
+    super.initState();
+    currentIndex = widget.index;
+  }
 
   List listOfPages = [
     OwnedPage(),
@@ -66,8 +74,8 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: primaryGreen,
         child: Icon(Icons.add),
         onPressed: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => AddNew()));
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => AddNew(index: currentIndex)));
         },
       ),
     );

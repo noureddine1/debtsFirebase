@@ -149,8 +149,10 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () {
                     _setIsLogin();
                     if (_isLogin) {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => HomePage()));
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => HomePage(
+                                index: 1,
+                              )));
                     }
                   },
                 ),

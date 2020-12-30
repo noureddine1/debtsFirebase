@@ -72,8 +72,10 @@ class _WelcomePageState extends State<WelcomePage> {
                   onPressed: () async {
                     _isLogin = await _setIsLogin();
                     if (_isLogin) {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => HomePage()));
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => HomePage(
+                                index: 1,
+                              )));
                     }
                   },
                 ),

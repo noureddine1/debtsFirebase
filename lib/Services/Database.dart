@@ -74,4 +74,23 @@ class DBProvider {
       return res.isNotEmpty ? res : null;
     }
   }
+
+  Future<int> updateDebt(int id) async {
+    final db = await database;
+    int updateCount = await db.rawUpdate('''
+    UPDATE debts 
+    SET status = ?
+    WHERE id = ?
+    ''', ['Completed', id]);
+    return updateCount;
+  }
+
+  Future<int> deleteDebt(int id) async {
+    final db = await database;
+    int updateCount = await db.rawDelete('''
+    DELETE FROM debts 
+    WHERE id = ?
+    ''', [id]);
+    return updateCount;
+  }
 }

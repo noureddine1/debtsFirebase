@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:debts/Services/Database.dart';
 import 'package:debts/consts.dart';
 import 'package:debts/models/debts.dart';
@@ -7,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 import 'package:sliding_switch/sliding_switch.dart';
 
 class OwnedPage extends StatefulWidget {
@@ -30,6 +30,16 @@ class _OwnedPageState extends State<OwnedPage> {
     final _debtDatas = await DBProvider.db.getOwnedDebt();
     print(_debtDatas);
     return _debtDatas;
+  }
+
+  _updateDebt(int id) async {
+    final _updatedint = await DBProvider.db.updateDebt(id);
+    print(_updatedint);
+  }
+
+  _deleteDebt(int id) async {
+    final _deletedint = await DBProvider.db.deleteDebt(id);
+    print(_deletedint);
   }
 
   double _percentCalculator(int index, List<Debt> list) {
@@ -92,10 +102,14 @@ class _OwnedPageState extends State<OwnedPage> {
                   return Container();
                   break;
                 case ConnectionState.waiting:
-                  return Container();
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
                   break;
                 case ConnectionState.active:
-                  return Container();
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
                   break;
                 case ConnectionState.done:
                   List<Debt> debtstoShow = List<Debt>();
@@ -196,14 +210,22 @@ class _OwnedPageState extends State<OwnedPage> {
                                 caption: 'Completed',
                                 color: primaryGreen,
                                 icon: Icons.check,
-                                onTap: () => {},
+                                onTap: () {
+                                  _updateDebt(debtstoShow[index].id);
+                                  setState(() {
+                                    _debtfutur = getOwnedDebt();
+                                  });
+                                },
                               ),
                               IconSlideAction(
                                 caption: 'Delete',
                                 color: Colors.red,
                                 icon: Icons.delete,
-                                onTap: () => {
-                                  print(debtstoShow[index].duedate),
+                                onTap: () {
+                                  _deleteDebt(debtstoShow[index].id);
+                                  setState(() {
+                                    _debtfutur = getOwnedDebt();
+                                  });
                                 },
                               ),
                             ],

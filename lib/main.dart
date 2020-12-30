@@ -48,7 +48,9 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
   @override
   Widget build(BuildContext context) {
     if (_isLogin) {
-      return HomePage();
+      return HomePage(
+        index: 1,
+      );
     } else {
       return WelcomePage();
     }
