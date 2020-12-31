@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:debts/UI/Pages/add_new_page.dart';
 import 'package:debts/UI/Pages/owns_page.dart';
 import 'package:debts/UI/Pages/stats_page.dart';
@@ -28,6 +30,25 @@ class _HomePageState extends State<HomePage> {
     OwnsPage(),
     StatsPage(),
   ];
+
+  Widget _title() {
+    if (currentIndex == 1)
+      return Text('Owed by me',
+          style: TextStyle(
+            color: secondaryText,
+          ));
+    else if (currentIndex == 0)
+      return Text('Owed to me',
+          style: TextStyle(
+            color: secondaryText,
+          ));
+    else if (currentIndex == 2)
+      return Text('Statistics',
+          style: TextStyle(
+            color: secondaryText,
+          ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,6 +58,8 @@ class _HomePageState extends State<HomePage> {
         ),
         backgroundColor: Colors.white,
         elevation: 0,
+        centerTitle: true,
+        title: _title(),
       ),
       backgroundColor: Colors.white,
       drawer: Drawer(
@@ -48,13 +71,13 @@ class _HomePageState extends State<HomePage> {
           items: <BottomNavyBarItem>[
             BottomNavyBarItem(
               icon: Icon(Icons.account_balance_wallet),
-              title: Text('Owned'),
+              title: Text('Owed'),
               activeColor: primaryGreen,
               inactiveColor: primaryGreen,
             ),
             BottomNavyBarItem(
               icon: Icon(Icons.monetization_on),
-              title: Text('Owns'),
+              title: Text('Owes'),
               activeColor: primaryGreen,
               inactiveColor: primaryGreen,
             ),

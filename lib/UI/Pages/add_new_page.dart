@@ -27,7 +27,7 @@ class _AddNewState extends State<AddNew> {
   String _dueDate, _fullNameString;
   String _amountInt;
   String _startDate;
-  String _docType = "Owned";
+  String _docType = "Ownes";
 
   bool validate() {
     final form = formKey.currentState;
@@ -116,8 +116,8 @@ class _AddNewState extends State<AddNew> {
                       },
                       height: MediaQuery.of(context).size.height * 0.07,
                       animationDuration: const Duration(milliseconds: 400),
-                      textOff: "Ownes",
-                      textOn: "Owned",
+                      textOff: "Owes",
+                      textOn: "Owed",
                       colorOn: primaryGreen,
                       colorOff: primaryGreen,
                       background: const Color(0xffe4e5eb),
@@ -199,24 +199,6 @@ class _AddNewState extends State<AddNew> {
                       ),
                       onPressed: () {
                         submit();
-                        // Random random = new Random();
-                        // int randomNumber = random.nextInt(10000);
-                        // var newDbDebt = Debt(
-                        //     id: randomNumber,
-                        //     fullname: _fullName.text,
-                        //     amount: int.parse(_amount.text),
-                        //     duedate: _dueDate,
-                        //     startdate: _startDate,
-                        //     type: _docType,
-                        //     status: "notCompleted");
-                        // DBProvider.db.newDebt(newDbDebt);
-                        // setState(() {});
-                        // Navigator.pushReplacement(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (BuildContext context) => HomePage(
-                        //               index: widget.index,
-                        //             )));
                       },
                     ),
                     SizedBox(
