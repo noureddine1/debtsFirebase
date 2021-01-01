@@ -1,8 +1,10 @@
 import 'dart:ui';
+import 'package:debts/UI/Pages/add_new_page.dart';
 import 'package:debts/UI/Pages/home_page.dart';
 import 'package:debts/UI/Pages/welcome_page.dart';
 import 'package:debts/consts.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class myDrawer extends StatefulWidget {
   @override
@@ -23,21 +25,20 @@ class _myDrawerState extends State<myDrawer> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                Icon(
-                  Icons.person,
-                  color: Colors.white,
-                  size: MediaQuery.of(context).size.height * 0.2,
-                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.15),
               ],
             ),
           ),
         ),
         SizedBox(height: MediaQuery.of(context).size.height * 0.02),
         ListTile(
-          leading: Icon(Icons.settings, color: secondaryText),
+          onTap: () {
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => AddNew(index: 1)));
+          },
+          leading: Icon(Icons.add, color: secondaryText),
           title: Text(
-            'Settings',
+            'Add',
             style: TextStyle(
               color: secondaryText,
               fontSize: 18,
@@ -45,6 +46,10 @@ class _myDrawerState extends State<myDrawer> {
           ),
         ),
         ListTile(
+          onTap: () {
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => HomePage(index: 2)));
+          },
           leading: Icon(Icons.stacked_bar_chart, color: secondaryText),
           title: Text(
             'Stats',
@@ -55,6 +60,9 @@ class _myDrawerState extends State<myDrawer> {
           ),
         ),
         ListTile(
+          onTap: () {
+            SystemNavigator.pop();
+          },
           leading: Icon(Icons.close, color: secondaryText),
           title: Text(
             'Quit',
