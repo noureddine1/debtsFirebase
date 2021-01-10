@@ -1,9 +1,11 @@
 import 'dart:ui';
 
+import 'package:debts/Services/authentication.dart';
 import 'package:debts/UI/Pages/Authentication/forgot_password_page.dart';
 import 'package:debts/consts.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SignupPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -96,7 +98,12 @@ class SignupPage extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6.0),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      context.read<AuthenticationService>().signUp(
+                            email: emailController.text.trim(),
+                            password: passwordController.text.trim(),
+                          );
+                    },
                   ),
                   RichText(
                     text: TextSpan(

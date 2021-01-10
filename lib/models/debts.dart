@@ -19,7 +19,7 @@ class Debt {
     this.status,
   });
 
-  int id;
+  String id;
   String fullname;
   int amount;
   String duedate;

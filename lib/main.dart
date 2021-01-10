@@ -1,59 +1,69 @@
+import 'package:debts/Services/authentication.dart';
 import 'package:debts/UI/Pages/home_page.dart';
-import 'package:debts/UI/Pages/Authentication/login_page.dart';
 import 'package:debts/UI/Pages/welcome_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
+  WidgetsFlutterBinding.ensureInitialized();
+  var initializationSettingsAndroid = AndroidInitializationSettings('launcher');
+  var initializationSettings =
+      InitializationSettings(android: initializationSettingsAndroid);
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+      onSelectNotification: (String payload) async {
+    if (payload != null) {
+      debugPrint('notification payload: $payload');
+    }
+  });
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        brightness: Brightness.light,
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+    return MultiProvider(
+      providers: [
+        Provider<AuthenticationService>(
+          create: (_) => AuthenticationService(FirebaseAuth.instance),
+        ),
+        StreamProvider(
+          create: (context) =>
+              context.read<AuthenticationService>().authStateChanges,
+        ),
+      ],
+      child: MaterialApp(
+        title: 'My Debts',
+        theme: ThemeData(
+          brightness: Brightness.light,
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        home: AuthenticationWrapper(),
       ),
-      home: AuthenticationWrapper(),
     );
   }
 }
 
-class AuthenticationWrapper extends StatefulWidget {
-  @override
-  _AuthenticationWrapperState createState() => _AuthenticationWrapperState();
-}
-
-class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
-  bool _isLogin = false;
-  _checkLogin() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    bool isLogin = (sharedPreferences.get('isLogin') ?? false);
-    setState(() {
-      _isLogin = isLogin;
-    });
-  }
-
-  @override
-  void initState() {
-    _checkLogin();
-    super.initState();
-  }
+class AuthenticationWrapper extends StatelessWidget {
+  const AuthenticationWrapper({
+    Key key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (_isLogin) {
+    final firebaseUser = context.watch<User>();
+    if (firebaseUser != null) {
       return HomePage(
         index: 1,
       );
-    } else {
-      return WelcomePage();
     }
+    return WelcomePage();
   }
 }

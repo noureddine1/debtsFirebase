@@ -1,12 +1,11 @@
 import 'dart:math';
-
-import 'package:debts/Services/Database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debts/Services/validators.dart';
 import 'package:debts/UI/Pages/home_page.dart';
 import 'package:debts/UI/widgets/date_picker.dart';
 import 'package:debts/consts.dart';
 import 'package:debts/models/debts.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -27,7 +26,9 @@ class _AddNewState extends State<AddNew> {
   String _dueDate, _fullNameString;
   String _amountInt;
   String _startDate;
-  String _docType = "Ownes";
+  String _docType = "Owes";
+
+  final FirebaseAuth auth = FirebaseAuth.instance;
 
   bool validate() {
     final form = formKey.currentState;
@@ -51,22 +52,43 @@ class _AddNewState extends State<AddNew> {
       print(_docType);
       print(randomNumber);
       var newDbDebt = Debt(
-          id: randomNumber,
           fullname: _fullNameString,
           amount: int.parse(_amountInt),
           duedate: _dueDate,
           startdate: _startDate,
           type: _docType,
           status: "notCompleted");
-      DBProvider.db.newDebt(newDbDebt);
-      setState(() {});
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => HomePage(
-                    index: widget.index,
-                  )));
+      addDebts(newDbDebt);
     }
+  }
+
+  Future<void> addDebts(Debt debt) {
+    final User user = auth.currentUser;
+    final uid = user.uid;
+    print('user id :' + uid);
+    CollectionReference users = FirebaseFirestore.instance.collection(uid);
+    return users
+        .add({
+          'id': debt.id,
+          'fullname': debt.fullname,
+          'amount': debt.amount,
+          'duedate': debt.duedate,
+          'startdate': debt.startdate,
+          'type': debt.type,
+          'status': debt.status,
+          // 42
+        })
+        .then((value) => navigate())
+        .catchError((error) => print("Failed to add user: $error"));
+  }
+
+  navigate() {
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => HomePage(
+                  index: widget.index,
+                )));
   }
 
   @override
@@ -105,11 +127,11 @@ class _AddNewState extends State<AddNew> {
                       onChanged: (bool value) {
                         if (value) {
                           setState(() {
-                            _docType = "Owned";
+                            _docType = "Owed";
                           });
                         } else {
                           setState(() {
-                            _docType = "Ownes";
+                            _docType = "Owes";
                           });
                         }
                         print(_docType);

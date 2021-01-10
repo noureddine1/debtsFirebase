@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:debts/UI/Pages/add_new_page.dart';
 import 'package:debts/UI/Pages/home_page.dart';
+import 'package:debts/UI/Pages/settings_page.dart';
 import 'package:debts/UI/Pages/welcome_page.dart';
 import 'package:debts/consts.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,20 @@ class _myDrawerState extends State<myDrawer> {
           ),
         ),
         SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+        ListTile(
+          onTap: () {
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => Settings()));
+          },
+          leading: Icon(Icons.settings, color: secondaryText),
+          title: Text(
+            'Settings',
+            style: TextStyle(
+              color: secondaryText,
+              fontSize: 18,
+            ),
+          ),
+        ),
         ListTile(
           onTap: () {
             Navigator.of(context).push(

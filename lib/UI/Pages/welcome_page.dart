@@ -1,4 +1,6 @@
 import 'dart:ui';
+import 'package:debts/UI/Pages/Authentication/login_page.dart';
+import 'package:debts/UI/Pages/Authentication/signup_page.dart';
 import 'package:debts/UI/Pages/home_page.dart';
 import 'package:debts/consts.dart';
 import 'package:flutter/gestures.dart';
@@ -11,15 +13,6 @@ class WelcomePage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<WelcomePage> {
-  bool _isLogin;
-
-  Future<bool> _setIsLogin() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences.setBool('isLogin', true);
-    bool isLogin = (sharedPreferences.get('isLogin') ?? false);
-    return isLogin;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,7 +54,7 @@ class _WelcomePageState extends State<WelcomePage> {
                         horizontal: MediaQuery.of(context).size.width * 0.3,
                         vertical: 15.0),
                     child: Text(
-                      'START',
+                      'Login',
                       style: TextStyle(color: Colors.white, fontSize: 14),
                     ),
                   ),
@@ -69,21 +62,16 @@ class _WelcomePageState extends State<WelcomePage> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(6.0),
                   ),
-                  onPressed: () async {
-                    _isLogin = await _setIsLogin();
-                    if (_isLogin) {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => HomePage(
-                                index: 1,
-                              )));
-                    }
+                  onPressed: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => LoginPage()));
                   },
                 ),
                 RichText(
                   text: TextSpan(
                     children: <TextSpan>[
                       TextSpan(
-                          text: 'Terms & Conditions',
+                          text: 'Sign up',
                           style: TextStyle(
                             height: 2.5,
                             fontSize: 12.0,
@@ -91,7 +79,9 @@ class _WelcomePageState extends State<WelcomePage> {
                           ),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                              print('Privacy Policy"');
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => SignupPage()));
+                              ;
                             }),
                     ],
                   ),
