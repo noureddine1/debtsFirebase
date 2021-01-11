@@ -10,6 +10,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sliding_switch/sliding_switch.dart';
 
 class OwnedPage extends StatefulWidget {
@@ -18,12 +19,9 @@ class OwnedPage extends StatefulWidget {
 }
 
 class _OwnedPageState extends State<OwnedPage> {
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
   String _toShow = 'notCompleted';
   CollectionReference debts;
   final FirebaseAuth auth = FirebaseAuth.instance;
-  Notifie _notifie;
 
   @override
   void initState() {
@@ -31,32 +29,6 @@ class _OwnedPageState extends State<OwnedPage> {
     final User user = auth.currentUser;
     final uid = user.uid;
     debts = FirebaseFirestore.instance.collection(uid);
-  }
-
-  Future showNotfication(int index, String dueDateString, String debtor) async {
-    DateTime dueDate;
-    DateTime addeddueDate;
-    DateTime now;
-    now = DateTime.now();
-    dueDate = DateFormat.yMMMd().parse(dueDateString);
-    print('duedate');
-    print(dueDate);
-    print('now');
-    print(now);
-    print('difference');
-    if (dueDate.difference(now).inDays > 1) {
-      addeddueDate = dueDate.subtract(Duration(hours: 15));
-      var androidDetails = AndroidNotificationDetails(
-        'channel Id',
-        'Local Notfication',
-        'the channel description',
-        importance: Importance.high,
-      );
-      var notificationDetails = NotificationDetails(android: androidDetails);
-      await flutterLocalNotificationsPlugin.schedule(index, debtor,
-          'due in ' + dueDateString, addeddueDate, notificationDetails);
-    }
-    ;
   }
 
   _updateDebt(Debt _debt) async {
@@ -102,6 +74,12 @@ class _OwnedPageState extends State<OwnedPage> {
     }
     print(_double);
     return _double;
+  }
+
+  Future<String> _getCurrency() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String getcurrency = prefs.getString('currency');
+    return getcurrency;
   }
 
   @override
@@ -174,8 +152,6 @@ class _OwnedPageState extends State<OwnedPage> {
                 child: ListView.builder(
                   itemCount: debtstoShow.length,
                   itemBuilder: (context, index) {
-                    showNotfication(index, debtstoShow[index].duedate,
-                        debtstoShow[index].fullname);
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Slidable(
@@ -190,11 +166,26 @@ class _OwnedPageState extends State<OwnedPage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   ListTile(
-                                    trailing: Text(
-                                      debtstoShow[index].amount.toString() +
-                                          ' \$',
-                                      style: TextStyle(
-                                          fontSize: 25, color: Colors.blue),
+                                    trailing: FutureBuilder(
+                                      future: _getCurrency(),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot snapshot) {
+                                        if (snapshot.hasData) {
+                                          String currency = snapshot.data;
+                                          return Text(
+                                            debtstoShow[index]
+                                                    .amount
+                                                    .toString() +
+                                                ' ' +
+                                                currency,
+                                            style: TextStyle(
+                                              fontSize: 25,
+                                              color: Colors.blue,
+                                            ),
+                                          );
+                                        }
+                                        return Container();
+                                      },
                                     ),
                                     title: Text('Debtor: ' +
                                         debtstoShow[index].fullname),

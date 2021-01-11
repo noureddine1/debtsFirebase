@@ -2,17 +2,18 @@ import 'dart:ui';
 import 'package:debts/UI/Pages/add_new_page.dart';
 import 'package:debts/UI/Pages/home_page.dart';
 import 'package:debts/UI/Pages/settings_page.dart';
-import 'package:debts/UI/Pages/welcome_page.dart';
 import 'package:debts/consts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class myDrawer extends StatefulWidget {
+class MyDrawer extends StatefulWidget {
   @override
-  _myDrawerState createState() => _myDrawerState();
+  _MyDrawerState createState() => _MyDrawerState();
 }
 
-class _myDrawerState extends State<myDrawer> {
+class _MyDrawerState extends State<MyDrawer> {
+  FirebaseAuth auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -26,7 +27,18 @@ class _myDrawerState extends State<myDrawer> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: MediaQuery.of(context).size.height * 0.15),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.05,
+                ),
+                Icon(Icons.person,
+                    color: Colors.white,
+                    size: MediaQuery.of(context).size.height * 0.12),
+                auth.currentUser != null
+                    ? Text(
+                        auth.currentUser.email,
+                        style: TextStyle(color: Colors.white, fontSize: 14),
+                      )
+                    : Container(),
               ],
             ),
           ),
@@ -68,6 +80,20 @@ class _myDrawerState extends State<myDrawer> {
           leading: Icon(Icons.stacked_bar_chart, color: secondaryText),
           title: Text(
             'Stats',
+            style: TextStyle(
+              color: secondaryText,
+              fontSize: 18,
+            ),
+          ),
+        ),
+        ListTile(
+          onTap: () async {
+            await FirebaseAuth.instance.signOut();
+            ;
+          },
+          leading: Icon(Icons.exit_to_app, color: secondaryText),
+          title: Text(
+            'Sign out',
             style: TextStyle(
               color: secondaryText,
               fontSize: 18,

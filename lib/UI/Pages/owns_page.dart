@@ -3,9 +3,11 @@ import 'package:debts/consts.dart';
 import 'package:debts/models/debts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sliding_switch/sliding_switch.dart';
 
 class OwnsPage extends StatefulWidget {
@@ -14,9 +16,12 @@ class OwnsPage extends StatefulWidget {
 }
 
 class _OwnsPageState extends State<OwnsPage> {
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
   String _toShow = 'notCompleted';
   CollectionReference debts;
   final FirebaseAuth auth = FirebaseAuth.instance;
+  bool shouldNotify;
 
   @override
   void initState() {
@@ -26,7 +31,11 @@ class _OwnsPageState extends State<OwnsPage> {
     debts = FirebaseFirestore.instance.collection(uid);
   }
 
-  getOwnedDebt() async {}
+  Future<bool> _getNotification() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool getStatus = prefs.getBool('notifications');
+    return getStatus;
+  }
 
   _updateDebt(Debt _debt) async {
     debts
@@ -70,6 +79,39 @@ class _OwnsPageState extends State<OwnsPage> {
     print('double');
     print(_double);
     return _double;
+  }
+
+  Future<String> _getCurrency() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String getcurrency = prefs.getString('currency');
+    return getcurrency;
+  }
+
+  Future showNotfication(int index, String dueDateString, String debtor) async {
+    DateTime dueDate;
+    DateTime addeddueDate;
+    DateTime now;
+    now = DateTime.now();
+    dueDate = DateFormat.yMMMd().parse(dueDateString);
+    print('duedate');
+    print(dueDate);
+    print('now');
+    print(now);
+    print('difference');
+    print(dueDate.difference(now).inHours);
+
+    if (dueDate.difference(now).inHours > 15) {
+      addeddueDate = dueDate.subtract(Duration(hours: 15));
+      var androidDetails = AndroidNotificationDetails(
+        'channel Id',
+        'Local Notfication',
+        'the channel description',
+        importance: Importance.high,
+      );
+      var notificationDetails = NotificationDetails(android: androidDetails);
+      await flutterLocalNotificationsPlugin.schedule(index, debtor,
+          'due in ' + dueDateString, addeddueDate, notificationDetails);
+    }
   }
 
   @override
@@ -142,6 +184,19 @@ class _OwnsPageState extends State<OwnsPage> {
                 child: ListView.builder(
                   itemCount: debtstoShow.length,
                   itemBuilder: (context, index) {
+                    _notify() async {
+                      shouldNotify = await _getNotification();
+                      print(shouldNotify);
+                      if (shouldNotify) {
+                        if (debtstoShow[index].status == 'notCompleted') {
+                          showNotfication(index, debtstoShow[index].duedate,
+                              debtstoShow[index].fullname);
+                        }
+                      }
+                    }
+
+                    _notify();
+
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Slidable(
@@ -156,12 +211,33 @@ class _OwnsPageState extends State<OwnsPage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   ListTile(
-                                    trailing: Text(
-                                      debtstoShow[index].amount.toString() +
-                                          ' \$',
-                                      style: TextStyle(
-                                          fontSize: 25, color: Colors.blue),
+                                    trailing: FutureBuilder(
+                                      future: _getCurrency(),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot snapshot) {
+                                        if (snapshot.hasData) {
+                                          String currency = snapshot.data;
+                                          return Text(
+                                            debtstoShow[index]
+                                                    .amount
+                                                    .toString() +
+                                                ' ' +
+                                                currency,
+                                            style: TextStyle(
+                                              fontSize: 25,
+                                              color: Colors.blue,
+                                            ),
+                                          );
+                                        }
+                                        return Container();
+                                      },
                                     ),
+                                    // trailing: Text(
+                                    //   debtstoShow[index].amount.toString() +
+                                    //       ' \$',
+                                    //   style: TextStyle(
+                                    //       fontSize: 25, color: Colors.blue),
+                                    // ),
                                     title: Text('Debtor: ' +
                                         debtstoShow[index].fullname),
                                     subtitle: Text(

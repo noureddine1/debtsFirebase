@@ -63,7 +63,7 @@ class _HomePageState extends State<HomePage> {
       ),
       backgroundColor: Colors.white,
       drawer: Drawer(
-        child: myDrawer(),
+        child: MyDrawer(),
       ),
       body: listOfPages[currentIndex],
       bottomNavigationBar: BottomNavyBar(

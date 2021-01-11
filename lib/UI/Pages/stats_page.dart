@@ -4,6 +4,7 @@ import 'package:debts/consts.dart';
 import 'package:debts/models/debts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class StatsPage extends StatefulWidget {
   @override
@@ -21,7 +22,11 @@ class _StatsPageState extends State<StatsPage> {
     super.initState();
   }
 
-  getDebts() async {}
+  Future<String> _getCurrency() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String getcurrency = prefs.getString('currency');
+    return getcurrency;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +41,9 @@ class _StatsPageState extends State<StatsPage> {
             }
 
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Text("Loading");
+              return Center(
+                child: CircularProgressIndicator(),
+              );
             }
             int _totalOwed = 0;
             int _totalOwes = 0;
@@ -77,147 +84,177 @@ class _StatsPageState extends State<StatsPage> {
             print(_owedOngoing);
             print('balance');
             print(_balance);
-            return Column(
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.03,
-                ),
-                Card(
-                  elevation: 10.0,
-                  color: Colors.black.withOpacity(0.5),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 20.0, horizontal: 5.0),
-                    child: Center(
-                      child: Text(
-                        'Balance: ' + _balance.toString() + ' \$',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: _balance > 0 ? primaryGreen : Colors.red,
+            return FutureBuilder(
+              future: _getCurrency(),
+              builder: (BuildContext context, AsyncSnapshot futuresnapshot) {
+                if (futuresnapshot.hasData) {
+                  return Column(
+                    children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.03,
+                      ),
+                      Card(
+                        elevation: 10.0,
+                        color: Colors.black.withOpacity(0.5),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 20.0, horizontal: 5.0),
+                          child: Center(
+                            child: Text(
+                              'Balance: ' +
+                                  _balance.toString() +
+                                  ' ' +
+                                  futuresnapshot.data,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: _balance > 0 ? primaryGreen : Colors.red,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.07,
-                ),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 20.0, horizontal: 5.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
-                          children: [
-                            Text(
-                              'Total owed by me',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              _totalOwes.toString() + ' \$',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.red,
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.07,
+                      ),
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 20.0, horizontal: 5.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Column(
+                                children: [
+                                  Text(
+                                    'Total owed by me',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    _totalOwes.toString() +
+                                        ' ' +
+                                        futuresnapshot.data,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
+                              Column(
+                                children: [
+                                  Text(
+                                    'Payed: ' +
+                                        _owesPayed.toString() +
+                                        ' ' +
+                                        futuresnapshot.data,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500,
+                                      color: primaryGreen,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    'On Going: ' +
+                                        _owesOngoing.toString() +
+                                        ' ' +
+                                        futuresnapshot.data,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                        Column(
-                          children: [
-                            Text(
-                              'Payed: ' + _owesPayed.toString() + ' \$',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
-                                color: primaryGreen,
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.07,
+                      ),
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 20.0, horizontal: 5.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Column(
+                                children: [
+                                  Text(
+                                    'Total owed to me',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    _totalOwed.toString() +
+                                        ' ' +
+                                        futuresnapshot.data,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500,
+                                      color: primaryGreen,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              'On Going: ' + _owesOngoing.toString() + ' \$',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.red,
+                              Column(
+                                children: [
+                                  Text(
+                                    'Payed: ' +
+                                        _owedPayed.toString() +
+                                        ' ' +
+                                        futuresnapshot.data,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500,
+                                      color: primaryGreen,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    'On Going: ' +
+                                        _owedOngoing.toString() +
+                                        ' ' +
+                                        futuresnapshot.data,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.07,
-                ),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 20.0, horizontal: 5.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
-                          children: [
-                            Text(
-                              'Total owed to me',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              _totalOwed.toString() + ' \$',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
-                                color: primaryGreen,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Text(
-                              'Payed: ' + _owedPayed.toString() + ' \$',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
-                                color: primaryGreen,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              'On Going: ' + _owedOngoing.toString() + ' \$',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.red,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+                      ),
+                    ],
+                  );
+                }
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
             );
           },
-        )
-        );
+        ));
   }
 }

@@ -81,9 +81,11 @@ packages:
   currency_picker:
     dependency: "direct main"
     description:
-      name: currency_picker
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "0147f4ff2a8db94b063d9b47bdc4f7b748f0a119"
+      url: "https://github.com/noureddine1/flutter_currency_picker"
+    source: git
     version: "1.0.4"
   custom_switch:
     dependency: "direct main"
