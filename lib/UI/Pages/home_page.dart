@@ -33,12 +33,12 @@ class _HomePageState extends State<HomePage> {
 
   Widget _title() {
     if (currentIndex == 1)
-      return Text('Owed by me',
+      return Text('Borrowed',
           style: TextStyle(
             color: secondaryText,
           ));
     else if (currentIndex == 0)
-      return Text('Owed to me',
+      return Text('Lend',
           style: TextStyle(
             color: secondaryText,
           ));
@@ -71,13 +71,13 @@ class _HomePageState extends State<HomePage> {
           items: <BottomNavyBarItem>[
             BottomNavyBarItem(
               icon: Icon(Icons.account_balance_wallet),
-              title: Text('Owed'),
+              title: Text('Lend'),
               activeColor: primaryGreen,
               inactiveColor: primaryGreen,
             ),
             BottomNavyBarItem(
               icon: Icon(Icons.monetization_on),
-              title: Text('Owes'),
+              title: Text('Borrowed'),
               activeColor: primaryGreen,
               inactiveColor: primaryGreen,
             ),

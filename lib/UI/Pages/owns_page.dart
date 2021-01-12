@@ -140,7 +140,7 @@ class _OwnsPageState extends State<OwnsPage> {
               height: MediaQuery.of(context).size.height * 0.07,
               animationDuration: const Duration(milliseconds: 400),
               textOff: "On Going",
-              textOn: "Completed",
+              textOn: "Paid",
               colorOn: Colors.red,
               colorOff: primaryGreen,
               buttonColor: const Color(0xfff7f5f7),
@@ -238,7 +238,7 @@ class _OwnsPageState extends State<OwnsPage> {
                                     //   style: TextStyle(
                                     //       fontSize: 25, color: Colors.blue),
                                     // ),
-                                    title: Text('Debtor: ' +
+                                    title: Text('Creditor: ' +
                                         debtstoShow[index].fullname),
                                     subtitle: Text(
                                       'due in ' +

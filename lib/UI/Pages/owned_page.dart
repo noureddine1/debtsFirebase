@@ -108,7 +108,7 @@ class _OwnedPageState extends State<OwnedPage> {
               height: MediaQuery.of(context).size.height * 0.07,
               animationDuration: const Duration(milliseconds: 400),
               textOff: "On Going",
-              textOn: "Completed",
+              textOn: "Paid",
               colorOn: Colors.red,
               colorOff: primaryGreen,
               buttonColor: const Color(0xfff7f5f7),

@@ -2,14 +2,28 @@ import 'dart:ui';
 
 import 'package:debts/Services/authentication.dart';
 import 'package:debts/UI/Pages/Authentication/forgot_password_page.dart';
+import 'package:debts/UI/Pages/home_page.dart';
 import 'package:debts/consts.dart';
+import 'package:dropdown_banner/dropdown_banner.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class SignupPage extends StatelessWidget {
+class SignupPage extends StatefulWidget {
+  @override
+  _SignupPageState createState() => _SignupPageState();
+}
+
+class _SignupPageState extends State<SignupPage> {
+  bool _loading = false;
+
+  FirebaseAuth auth = FirebaseAuth.instance;
+
   final TextEditingController emailController = TextEditingController();
+
   final TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,41 +101,68 @@ class SignupPage extends StatelessWidget {
                     color: primaryGreen,
                     child: Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: MediaQuery.of(context).size.width * 0.3,
-                          vertical: 15.0),
-                      child: Text(
-                        'SIGNUP',
-                        style: TextStyle(color: Colors.white, fontSize: 14),
+                        horizontal: MediaQuery.of(context).size.width * 0.1,
+                      ),
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * 0.07,
+                        width: MediaQuery.of(context).size.width * 0.5,
+                        child: Center(
+                          child: _loading
+                              ? SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.04,
+                                  width:
+                                      MediaQuery.of(context).size.height * 0.04,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 3.0,
+                                    valueColor:
+                                        new AlwaysStoppedAnimation<Color>(
+                                            Colors.white),
+                                  ))
+                              : Text(
+                                  'Sign up',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                        ),
                       ),
                     ),
                     splashColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6.0),
                     ),
-                    onPressed: () {
-                      context.read<AuthenticationService>().signUp(
-                            email: emailController.text.trim(),
-                            password: passwordController.text.trim(),
-                          );
+                    onPressed: () async {
+                      setState(() {
+                        _loading = true;
+                      });
+                      try {
+                        UserCredential userCredential =
+                            await auth.createUserWithEmailAndPassword(
+                          email: emailController.text.trim(),
+                          password: passwordController.text.trim(),
+                        );
+                      } on FirebaseAuthException catch (e) {
+                        setState(() {
+                          _loading = false;
+                        });
+                        DropdownBanner.showBanner(
+                          text: e.message,
+                          color: Colors.red,
+                          duration: Duration(seconds: 10),
+                          textStyle: TextStyle(color: Colors.white),
+                        );
+                        print(e.message);
+                      }
+                      if (auth.currentUser != null) {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => HomePage(
+                                  index: 1,
+                                )));
+                      }
                     },
                   ),
-                  RichText(
-                    text: TextSpan(
-                      children: <TextSpan>[
-                        TextSpan(
-                            text: 'Terms & Conditions',
-                            style: TextStyle(
-                              height: 2.5,
-                              fontSize: 14.0,
-                              color: secondaryText,
-                            ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                print('terms');
-                              }),
-                      ],
-                    ),
-                  )
                 ],
               ),
             ),

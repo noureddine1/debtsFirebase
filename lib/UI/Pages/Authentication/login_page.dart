@@ -1,12 +1,15 @@
 import 'dart:ui';
+import 'package:debts/Services/authentication.dart';
 import 'package:debts/UI/Pages/Authentication/forgot_password_page.dart';
 
 import 'package:debts/UI/Pages/Authentication/signup_page.dart';
 import 'package:debts/UI/Pages/home_page.dart';
 import 'package:debts/consts.dart';
+import 'package:dropdown_banner/dropdown_banner.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -14,20 +17,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _loading = false;
+  FirebaseAuth auth = FirebaseAuth.instance;
   final TextEditingController emailController = TextEditingController();
 
   final TextEditingController passwordController = TextEditingController();
-
-  bool _isLogin = false;
-
-  _setIsLogin() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences.setBool('isLogin', true);
-    bool isLogin = (sharedPreferences.get('isLogin') ?? false);
-    setState(() {
-      _isLogin = isLogin;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,20 +129,61 @@ class _LoginPageState extends State<LoginPage> {
                   color: primaryGreen,
                   child: Padding(
                     padding: EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width * 0.3,
-                        vertical: 15.0),
-                    child: Text(
-                      'LOGIN',
-                      style: TextStyle(color: Colors.white, fontSize: 14),
+                      horizontal: MediaQuery.of(context).size.width * 0.1,
+                    ),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.07,
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      child: Center(
+                        child: _loading
+                            ? SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.04,
+                                width:
+                                    MediaQuery.of(context).size.height * 0.04,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 3.0,
+                                  valueColor: new AlwaysStoppedAnimation<Color>(
+                                      Colors.white),
+                                ))
+                            : Text(
+                                'Login',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w400),
+                              ),
+                      ),
                     ),
                   ),
                   splashColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(6.0),
                   ),
-                  onPressed: () {
-                    _setIsLogin();
-                    if (_isLogin) {
+                  onPressed: () async {
+                    setState(() {
+                      _loading = true;
+                    });
+                    print(_loading);
+                    try {
+                      UserCredential userCredential =
+                          await auth.signInWithEmailAndPassword(
+                        email: emailController.text.trim(),
+                        password: passwordController.text.trim(),
+                      );
+                    } on FirebaseAuthException catch (e) {
+                      DropdownBanner.showBanner(
+                        text: e.message,
+                        color: Colors.red,
+                        duration: Duration(seconds: 10),
+                        textStyle: TextStyle(color: Colors.white),
+                      );
+                      print(e.message);
+                      setState(() {
+                        _loading = false;
+                      });
+                    }
+                    if (auth.currentUser != null) {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => HomePage(
                                 index: 1,
@@ -168,9 +203,9 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       TextSpan(
-                          text: 'Signup',
+                          text: 'Sign up',
                           style: TextStyle(
-                            fontSize: 14.0,
+                            fontSize: 20.0,
                             color: primaryGreen,
                           ),
                           recognizer: TapGestureRecognizer()
@@ -180,7 +215,7 @@ class _LoginPageState extends State<LoginPage> {
                             }),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),

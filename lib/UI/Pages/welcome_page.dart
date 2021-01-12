@@ -28,7 +28,7 @@ class _WelcomePageState extends State<WelcomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Log in to your account",
+                  "Hey there!",
                   style: TextStyle(fontSize: 16, color: primaryText),
                 ),
                 Text(
@@ -51,11 +51,17 @@ class _WelcomePageState extends State<WelcomePage> {
                   color: primaryGreen,
                   child: Padding(
                     padding: EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width * 0.3,
-                        vertical: 15.0),
-                    child: Text(
-                      'Login',
-                      style: TextStyle(color: Colors.white, fontSize: 14),
+                      horizontal: MediaQuery.of(context).size.width * 0.1,
+                    ),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.07,
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      child: Center(
+                        child: Text(
+                          'Login',
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                      ),
                     ),
                   ),
                   splashColor: Colors.white,
@@ -67,25 +73,7 @@ class _WelcomePageState extends State<WelcomePage> {
                         MaterialPageRoute(builder: (context) => LoginPage()));
                   },
                 ),
-                RichText(
-                  text: TextSpan(
-                    children: <TextSpan>[
-                      TextSpan(
-                          text: 'Sign up',
-                          style: TextStyle(
-                            height: 2.5,
-                            fontSize: 12.0,
-                            color: secondaryText,
-                          ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => SignupPage()));
-                              ;
-                            }),
-                    ],
-                  ),
-                ),
+
                 // FlatButton(
                 //   onPressed: () {},
                 //   child: Text(

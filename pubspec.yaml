@@ -43,6 +43,7 @@ dependencies:
   currency_picker:
     git:
       url: https://github.com/noureddine1/flutter_currency_picker
+  dropdown_banner: ^1.4.0
 
   
 

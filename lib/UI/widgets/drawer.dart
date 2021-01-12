@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:debts/UI/Pages/add_new_page.dart';
 import 'package:debts/UI/Pages/home_page.dart';
 import 'package:debts/UI/Pages/settings_page.dart';
+import 'package:debts/UI/Pages/welcome_page.dart';
 import 'package:debts/consts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -89,7 +90,10 @@ class _MyDrawerState extends State<MyDrawer> {
         ListTile(
           onTap: () async {
             await FirebaseAuth.instance.signOut();
-            ;
+            if (auth.currentUser == null) {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => WelcomePage()));
+            }
           },
           leading: Icon(Icons.exit_to_app, color: secondaryText),
           title: Text(
