@@ -7,6 +7,7 @@ import 'package:debts/consts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class MyDrawer extends StatefulWidget {
   @override
@@ -14,6 +15,8 @@ class MyDrawer extends StatefulWidget {
 }
 
 class _MyDrawerState extends State<MyDrawer> {
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
   FirebaseAuth auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
@@ -89,6 +92,7 @@ class _MyDrawerState extends State<MyDrawer> {
         ),
         ListTile(
           onTap: () async {
+            await flutterLocalNotificationsPlugin.cancelAll();
             await FirebaseAuth.instance.signOut();
             if (auth.currentUser == null) {
               Navigator.of(context)

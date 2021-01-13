@@ -114,6 +114,10 @@ class _OwnsPageState extends State<OwnsPage> {
     }
   }
 
+  Future cancelNotification(int index) async {
+    await flutterLocalNotificationsPlugin.cancel(index);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -274,10 +278,12 @@ class _OwnsPageState extends State<OwnsPage> {
                         ),
                         secondaryActions: <Widget>[
                           IconSlideAction(
-                            caption: 'Completed',
+                            caption: 'Paid',
                             color: Colors.white,
-                            iconWidget: Icon(Icons.check),
+                            foregroundColor: secondaryText,
+                            iconWidget: Icon(Icons.check, color: secondaryText),
                             onTap: () {
+                              cancelNotification(index);
                               debtstoShow[index].status = 'Completed';
                               _updateDebt(debtstoShow[index]);
                             },
@@ -285,8 +291,13 @@ class _OwnsPageState extends State<OwnsPage> {
                           IconSlideAction(
                             caption: 'Delete',
                             color: Colors.white,
-                            iconWidget: Icon(Icons.delete),
+                            foregroundColor: secondaryText,
+                            iconWidget: Icon(
+                              Icons.delete,
+                              color: secondaryText,
+                            ),
                             onTap: () {
+                              cancelNotification(index);
                               _deleteDebt(debtstoShow[index].id);
                             },
                           ),

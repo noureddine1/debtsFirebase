@@ -2,6 +2,7 @@ import 'package:currency_picker/currency_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:debts/consts.dart';
 import 'package:custom_switch/custom_switch.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Settings extends StatefulWidget {
@@ -10,6 +11,8 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
   String currency = 'S';
   bool status;
 
@@ -82,8 +85,11 @@ class _SettingsState extends State<Settings> {
                     return CustomSwitch(
                       activeColor: primaryGreen,
                       value: status,
-                      onChanged: (value) {
+                      onChanged: (value) async {
                         _setNotfication(value);
+                        if (!value) {
+                          await flutterLocalNotificationsPlugin.cancelAll();
+                        }
                         print(snapshot.data);
                         setState(() {
                           status = value;
