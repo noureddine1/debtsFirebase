@@ -40,6 +40,7 @@ dependencies:
   provider: ^4.3.2+3
   flutter_local_notifications: ^3.0.2
   custom_switch: ^0.0.1
+  date_picker_timeline: ^1.2.1
   currency_picker:
     git:
       url: https://github.com/noureddine1/flutter_currency_picker

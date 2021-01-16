@@ -65,7 +65,8 @@ class _OwnedPageState extends State<OwnedPage> {
     print('due date ');
     print(dueDate);
     todayDate = DateTime.now();
-    if (dueDate.difference(startDate).inDays == 0) {
+
+    if (dueDate.difference(startDate).inDays >= 0) {
       print(dueDate.difference(startDate).inDays);
       _double = 1;
     } else {
@@ -79,6 +80,9 @@ class _OwnedPageState extends State<OwnedPage> {
   Future<String> _getCurrency() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String getcurrency = prefs.getString('currency');
+    if (getcurrency == null) {
+      getcurrency = '\$';
+    }
     return getcurrency;
   }
 
@@ -184,7 +188,10 @@ class _OwnedPageState extends State<OwnedPage> {
                                             ),
                                           );
                                         }
-                                        return Container();
+                                        return Container(
+                                          height: 1,
+                                          width: 1,
+                                        );
                                       },
                                     ),
                                     title: Text('Debtor: ' +

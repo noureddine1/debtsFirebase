@@ -34,9 +34,12 @@ class _MyDrawerState extends State<MyDrawer> {
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.05,
                 ),
-                Icon(Icons.person,
+                Icon(Icons.account_circle,
                     color: Colors.white,
                     size: MediaQuery.of(context).size.height * 0.12),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.02,
+                ),
                 auth.currentUser != null
                     ? Text(
                         auth.currentUser.email,

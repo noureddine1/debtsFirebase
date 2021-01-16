@@ -24,6 +24,9 @@ class _SettingsState extends State<Settings> {
   Future<bool> _getNotification() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool getStatus = prefs.getBool('notifications');
+    if (getStatus == null) {
+      getStatus = true;
+    }
     return getStatus;
   }
 
@@ -42,6 +45,9 @@ class _SettingsState extends State<Settings> {
   Future<String> _getCurrency() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String getcurrency = prefs.getString('currency');
+    if (getcurrency == null) {
+      getcurrency = '\$';
+    }
     return getcurrency;
   }
 

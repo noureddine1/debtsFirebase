@@ -25,6 +25,9 @@ class _StatsPageState extends State<StatsPage> {
   Future<String> _getCurrency() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String getcurrency = prefs.getString('currency');
+    if (getcurrency == null) {
+      getcurrency = '\$';
+    }
     return getcurrency;
   }
 

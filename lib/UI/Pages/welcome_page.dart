@@ -73,16 +73,6 @@ class _WelcomePageState extends State<WelcomePage> {
                         MaterialPageRoute(builder: (context) => LoginPage()));
                   },
                 ),
-
-                // FlatButton(
-                //   onPressed: () {},
-                //   child: Text(
-
-                //     "Terms & Conditions",
-
-                //     style: TextStyle(fontSize: 12, color: secondaryText),
-                //   ),
-                // ),
               ],
             ),
           ),

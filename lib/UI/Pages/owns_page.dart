@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debts/consts.dart';
 import 'package:debts/models/debts.dart';
+import 'package:dropdown_banner/dropdown_banner.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -22,10 +23,12 @@ class _OwnsPageState extends State<OwnsPage> {
   CollectionReference debts;
   final FirebaseAuth auth = FirebaseAuth.instance;
   bool shouldNotify;
+  bool getTuto;
 
   @override
   void initState() {
     super.initState();
+    _getTuto();
     final User user = auth.currentUser;
     final uid = user.uid;
     debts = FirebaseFirestore.instance.collection(uid);
@@ -34,7 +37,25 @@ class _OwnsPageState extends State<OwnsPage> {
   Future<bool> _getNotification() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool getStatus = prefs.getBool('notifications');
+    if (getStatus == null) {
+      getStatus = true;
+    }
     return getStatus;
+  }
+
+  Future<bool> _getTuto() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    getTuto = prefs.getBool('tuto');
+    if (getTuto == null) {
+      getTuto = true;
+    }
+    return getTuto;
+  }
+
+  _setTuto() async {
+    print('setting notification');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('tuto', false);
   }
 
   _updateDebt(Debt _debt) async {
@@ -69,7 +90,7 @@ class _OwnsPageState extends State<OwnsPage> {
     dueDate = DateFormat.yMMMd().parse(list[index].duedate);
     startDate = DateFormat.yMMMd().parse(list[index].startdate);
     todayDate = DateTime.now();
-    if (dueDate.difference(startDate).inDays == 0) {
+    if (dueDate.difference(startDate).inDays >= 0) {
       print(dueDate.difference(startDate).inDays);
       _double = 1;
     } else {
@@ -84,6 +105,9 @@ class _OwnsPageState extends State<OwnsPage> {
   Future<String> _getCurrency() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String getcurrency = prefs.getString('currency');
+    if (getcurrency == null) {
+      getcurrency = '\$';
+    }
     return getcurrency;
   }
 
@@ -184,6 +208,18 @@ class _OwnsPageState extends State<OwnsPage> {
                   }
                 }
               });
+              if (debtstoShow.length != 0) {
+                if (getTuto) {
+                  DropdownBanner.showBanner(
+                    text: 'Swipe the debts to the left for more options ',
+                    color: primaryGreen,
+                    duration: Duration(seconds: 5),
+                    textStyle: TextStyle(color: Colors.white),
+                  );
+                  _setTuto();
+                }
+              }
+
               return Expanded(
                 child: ListView.builder(
                   itemCount: debtstoShow.length,
@@ -233,15 +269,12 @@ class _OwnsPageState extends State<OwnsPage> {
                                             ),
                                           );
                                         }
-                                        return Container();
+                                        return Container(
+                                          height: 1,
+                                          width: 1,
+                                        );
                                       },
                                     ),
-                                    // trailing: Text(
-                                    //   debtstoShow[index].amount.toString() +
-                                    //       ' \$',
-                                    //   style: TextStyle(
-                                    //       fontSize: 25, color: Colors.blue),
-                                    // ),
                                     title: Text('Creditor: ' +
                                         debtstoShow[index].fullname),
                                     subtitle: Text(

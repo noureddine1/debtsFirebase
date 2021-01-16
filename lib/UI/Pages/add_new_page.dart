@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:debts/Services/validators.dart';
 import 'package:debts/UI/Pages/home_page.dart';
 import 'package:debts/UI/widgets/date_picker.dart';
@@ -109,6 +110,11 @@ class _AddNewState extends State<AddNew> {
         ),
         backgroundColor: Colors.white,
         elevation: 0,
+        title: Text(
+          'Add New',
+          style: TextStyle(color: secondaryText),
+        ),
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -147,7 +153,7 @@ class _AddNewState extends State<AddNew> {
                       inactiveColor: const Color(0xff636f7b),
                     ),
                     SizedBox(
-                      height: 20,
+                      height: MediaQuery.of(context).size.height * 0.025,
                     ),
                     TextFormField(
                       validator: Validator.validate,
@@ -165,7 +171,7 @@ class _AddNewState extends State<AddNew> {
                       ),
                     ),
                     SizedBox(
-                      height: 20,
+                      height: MediaQuery.of(context).size.height * 0.025,
                     ),
                     TextFormField(
                       validator: Validator.validate,
@@ -186,23 +192,41 @@ class _AddNewState extends State<AddNew> {
                       ),
                     ),
                     SizedBox(
-                      height: 20,
+                      height: MediaQuery.of(context).size.height * 0.05,
                     ),
-                    MyTextFieldDatePicker(
-                      labelText: "Date",
-                      prefixIcon: Icon(Icons.date_range),
-                      suffixIcon: Icon(Icons.arrow_drop_down),
-                      lastDate: DateTime.now().add(Duration(days: 366)),
-                      firstDate: DateTime.now(),
-                      initialDate: DateTime.now().add(Duration(days: 1)),
-                      onDateChanged: (selectedDate) {
+                    Text(
+                      "Date",
+                      style: TextStyle(fontSize: 22, color: secondaryText),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.025,
+                    ),
+                    DatePicker(
+                      DateTime.now(),
+                      initialSelectedDate: DateTime.now(),
+                      selectionColor: primaryGreen,
+                      selectedTextColor: Colors.white,
+                      onDateChange: (date) {
                         setState(() {
-                          _dueDate = DateFormat.yMMMd().format(selectedDate);
+                          _dueDate = DateFormat.yMMMd().format(date);
                         });
                       },
                     ),
+                    // MyTextFieldDatePicker(
+                    //   labelText: "Date",
+                    //   prefixIcon: Icon(Icons.date_range),
+                    //   suffixIcon: Icon(Icons.arrow_drop_down),
+                    //   lastDate: DateTime.now().add(Duration(days: 366)),
+                    //   firstDate: DateTime.now(),
+                    //   initialDate: DateTime.now().add(Duration(days: 1)),
+                    //   onDateChanged: (selectedDate) {
+                    //     setState(() {
+                    //       _dueDate = DateFormat.yMMMd().format(selectedDate);
+                    //     });
+                    //   },
+                    // ),
                     SizedBox(
-                      height: 20,
+                      height: MediaQuery.of(context).size.height * 0.08,
                     ),
                     RaisedButton(
                       color: primaryGreen,
