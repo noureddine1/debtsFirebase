@@ -65,9 +65,9 @@ class _OwnedPageState extends State<OwnedPage> {
     print('due date ');
     print(dueDate);
     todayDate = DateTime.now();
-
-    if (dueDate.difference(startDate).inDays >= 0) {
-      print(dueDate.difference(startDate).inDays);
+    print('difference today date and due ');
+    print(todayDate.difference(dueDate).inDays);
+    if (todayDate.difference(dueDate).inDays >= 0) {
       _double = 1;
     } else {
       _double = todayDate.difference(startDate).inDays /

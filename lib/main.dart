@@ -2,6 +2,7 @@ import 'package:debts/Services/authentication.dart';
 import 'package:debts/UI/Pages/home_page.dart';
 import 'package:debts/UI/Pages/welcome_page.dart';
 import 'package:debts/consts.dart';
+import 'package:debts/test.dart';
 import 'package:dropdown_banner/dropdown_banner.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,8 @@ Future<void> main() async {
       FlutterLocalNotificationsPlugin();
 
   WidgetsFlutterBinding.ensureInitialized();
-  var initializationSettingsAndroid = AndroidInitializationSettings('launcher');
+  var initializationSettingsAndroid =
+      AndroidInitializationSettings('notification');
   var initializationSettings =
       InitializationSettings(android: initializationSettingsAndroid);
   await flutterLocalNotificationsPlugin.initialize(initializationSettings,

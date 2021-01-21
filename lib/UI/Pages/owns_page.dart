@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debts/consts.dart';
 import 'package:debts/models/debts.dart';
 import 'package:dropdown_banner/dropdown_banner.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -89,15 +90,17 @@ class _OwnsPageState extends State<OwnsPage> {
     double _double;
     dueDate = DateFormat.yMMMd().parse(list[index].duedate);
     startDate = DateFormat.yMMMd().parse(list[index].startdate);
+    print('due date ');
+    print(dueDate);
     todayDate = DateTime.now();
-    if (dueDate.difference(startDate).inDays >= 0) {
-      print(dueDate.difference(startDate).inDays);
+    print('difference today date and due ');
+    print(todayDate.difference(dueDate).inDays);
+    if (todayDate.difference(dueDate).inDays >= 0) {
       _double = 1;
     } else {
       _double = todayDate.difference(startDate).inDays /
           dueDate.difference(startDate).inDays;
     }
-    print('double');
     print(_double);
     return _double;
   }
@@ -125,6 +128,7 @@ class _OwnsPageState extends State<OwnsPage> {
     print(dueDate.difference(now).inHours);
 
     if (dueDate.difference(now).inHours > 15) {
+      await flutterLocalNotificationsPlugin.cancel(index);
       addeddueDate = dueDate.subtract(Duration(hours: 15));
       var androidDetails = AndroidNotificationDetails(
         'channel Id',
