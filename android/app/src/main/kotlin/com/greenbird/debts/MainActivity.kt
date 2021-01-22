@@ -1,4 +1,4 @@
-package com.example.debts
+package com.greenbird.debts
 
 import io.flutter.embedding.android.FlutterActivity
 
