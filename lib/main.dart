@@ -2,9 +2,10 @@ import 'package:debts/Services/authentication.dart';
 import 'package:debts/UI/Pages/home_page.dart';
 import 'package:debts/UI/Pages/welcome_page.dart';
 import 'package:debts/consts.dart';
-import 'package:debts/test.dart';
+import 'package:device_preview/device_preview.dart';
 import 'package:dropdown_banner/dropdown_banner.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -27,7 +28,12 @@ Future<void> main() async {
     }
   });
   await Firebase.initializeApp();
-  runApp(MyApp());
+  runApp(
+    DevicePreview(
+      enabled: !kReleaseMode,
+      builder: (context) => MyApp(), // Wrap your app
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

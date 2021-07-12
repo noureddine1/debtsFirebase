@@ -94,6 +94,23 @@ class _MyDrawerState extends State<MyDrawer> {
           ),
         ),
         ListTile(
+          onTap: () {
+            showAboutDialog(
+                context: context,
+                applicationName: 'Debts',
+                applicationLegalese:
+                    'Debts is devleoped by Noureddine Debiane with Flutter Framework');
+          },
+          leading: Icon(Icons.info_outline, color: secondaryText),
+          title: Text(
+            'About',
+            style: TextStyle(
+              color: secondaryText,
+              fontSize: 18,
+            ),
+          ),
+        ),
+        ListTile(
           onTap: () async {
             await flutterLocalNotificationsPlugin.cancelAll();
             await FirebaseAuth.instance.signOut();
